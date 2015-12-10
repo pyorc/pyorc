@@ -2,8 +2,7 @@ from django.views.generic import View
 from django.http.response import HttpResponse
 
 
-class LoginView(View):
+class AuthenticationView(View):
 
-    def get(self, request):
-        print 'foo'
+    def post(self, request):
         return HttpResponse()

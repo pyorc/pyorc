@@ -4,9 +4,9 @@
 
 from django.conf.urls import url
 
-from accounts.views import LoginView
+from accounts.views import AuthenticationView
 
 
 urlpatterns = [
-    url(r'^/login/$', LoginView.as_view()),
+    url(r'^/authentication$', AuthenticationView.as_view()),
 ]

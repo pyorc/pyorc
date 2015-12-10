@@ -17,5 +17,4 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     url(r'^accounts', include('accounts.urls')),
-    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
