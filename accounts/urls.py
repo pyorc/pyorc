@@ -8,5 +8,5 @@ from accounts.views import AuthenticationView
 
 
 urlpatterns = [
-    url(r'^/authentication$', AuthenticationView.as_view()),
+    url(r'^authentication$', AuthenticationView.as_view()),
 ]
