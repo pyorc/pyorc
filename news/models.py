@@ -8,16 +8,16 @@ from django.db.models.query_utils import Q
 class NewsModel(models.Model):
     news_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=64)
-    image_url = models.CharField(max_length=128)
-    author = models.CharField(max_length=16)
-    date_time = models.DateTimeField(auto_now=True)
-    keywords = models.CharField(max_length=64)
+    image_url = models.CharField(max_length=128, null=True)
+    author = models.CharField(max_length=32)
+    date_time = models.DateTimeField()
+    keywords = models.CharField(max_length=128, null=True)
     original_link = models.CharField(max_length=128)
     source = models.CharField(max_length=16)
     content = models.TextField()
-    reading_number = models.IntegerField()
-    agree_number = models.IntegerField()
-    disagree_number = models.IntegerField()
+    reading_number = models.IntegerField(default=0)
+    agree_number = models.IntegerField(default=0)
+    disagree_number = models.IntegerField(default=0)
     category = models.IntegerField()
 
     class Meta:
@@ -75,3 +75,4 @@ class DoNewsModel(object):
     @classmethod
     def delete_by_ids(cls, news_ids):
         NewsModel.objects.filter(news_id__in=news_ids).delete()
+
