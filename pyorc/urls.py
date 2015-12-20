@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 
+import accounts.urls
+import posts.urls
+
 
 urlpatterns = [
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^accounts', include(accounts.urls)),
+    # url(r'^posts', include(posts.urls)),
+    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
