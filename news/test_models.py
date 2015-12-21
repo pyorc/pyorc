@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+# noinspection PyUnresolvedReferences
 from datetime import datetime, timedelta
 
-from models import DoNewsModel, NewsModel
+from models import DoNewsModel, News
 
 
 class NewsModelTest(unittest.TestCase):
     def setUp(self):
-        NewsModel.objects.create(
+        News.objects.create(
             title=u'新闻',
             image_url='pyorc/aa.jpg',
             author=u'新闻',
@@ -33,7 +34,7 @@ class NewsModelTest(unittest.TestCase):
         self.assertEqual(len(news), 1)
 
     def test_delete(self):
-        NewsModel.objects.create(
+        News.objects.create(
             title='新闻',
             image_url='pyorc/aa.jpg',
             author=u'小白',
@@ -73,7 +74,7 @@ class NewsModelTest(unittest.TestCase):
         self.assertEqual(news['news_id'], 8)
 
     def test_delete(self):
-        NewsModel.objects.create(
+        News.objects.create(
             title='新闻',
             image_url='pyorc/aa.jpg',
             author=u'小白',
@@ -93,4 +94,4 @@ class NewsModelTest(unittest.TestCase):
         self.assertIsNone(flag)
 
     def tearDown(self):
-        NewsModel.objects.all().delete()
+        News.objects.all().delete()

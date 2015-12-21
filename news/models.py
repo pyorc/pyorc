@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models.query_utils import Q
 
 
-class NewsModel(models.Model):
+class News(models.Model):
     news_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=64)
     image_url = models.CharField(max_length=128, null=True)
@@ -45,8 +45,8 @@ class DoNewsModel(object):
     @classmethod
     def get_by_id(cls, news_id):
         try:
-            news = NewsModel.objects.get(news_id=news_id)
-        except NewsModel.DoesNotExist:
+            news = News.objects.get(news_id=news_id)
+        except News.DoesNotExist:
             return None
         return news.detail()
 
@@ -55,24 +55,23 @@ class DoNewsModel(object):
         condition = Q()
         if category:
             condition &= Q(category=category)
-        news = NewsModel.objects.filter(category=category). \
-            order_by('-date_time')[page_num * page_size:(page_num + 1) * page_size]
+        news = News.objects.filter(category=category). \
+                   order_by('-date_time')[page_num * page_size:(page_num + 1) * page_size]
         return [news.detail() for news in news]
 
     @classmethod
     def add(cls, param):
-        NewsModel.objects.create(**param)
-        return {'news_id':param['news_id']}
+        News.objects.create(**param)
+        return {'news_id': param['news_id']}
 
     @classmethod
     def delete_by_id(cls, news_id):
         try:
-            news = NewsModel.objects.get(news_id=news_id)
-        except NewsModel.DoesNotExist:
-            return NewsModel.DoesNotExist
+            news = News.objects.get(news_id=news_id)
+        except News.DoesNotExist:
+            return News.DoesNotExist
         news.delete()
 
     @classmethod
     def delete_by_ids(cls, news_ids):
-        NewsModel.objects.filter(news_id__in=news_ids).delete()
-
+        News.objects.filter(news_id__in=news_ids).delete()
