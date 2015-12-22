@@ -14,8 +14,10 @@ class AccountViewSet(ViewSet):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = User.objects.create_user(**serializer.validated_data)
-            return Response(user.username, status=201)
+            token = Token.objects.create(user=user)
+            data = {
+                'username': user.username,
+                'token': token.key
+            }
+            return Response(data, status=201)
         return Response(serializer.errors, status=400)
-
-    def login(self, request):
-        return Response()
