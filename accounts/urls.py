@@ -8,5 +8,5 @@ user_registration = AccountViewSet.as_view(actions={'post': 'register'})
 
 urlpatterns = [
     url(r'^$', user_registration),
-    url(r'^authentication$', views.obtain_auth_token),
+    url(r'^/authentication$', views.obtain_auth_token),
 ]
