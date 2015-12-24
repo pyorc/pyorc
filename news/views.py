@@ -7,26 +7,35 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 
 from models import News
-from serializers import NewsSerializer,NewsListSerializer
+from paginations import NewsSetPagination
+from serializers import NewsDetailSerializer, NewsListSerializer
 
 
 class NewsListViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = News.objects.all()
-        serializer = NewsListSerializer(queryset, many=True)
-        return Response(serializer.data)
+    paginator = NewsSetPagination()
+    queryset = News.objects.all()
+
+    def list(self, request, **kwargs):
+        page = self.paginator.paginate_queryset(self.queryset, request)
+        drivers = NewsListSerializer(page, many=True).data
+        return self.paginator.get_paginated_response(drivers)
+
+        # def create(self, request):
+        #     # todo
+        #     return Response(status=status.HTTP_201_CREATED)
 
 
 class NewsDetailViewSet(viewsets.ViewSet):
+    queryset = News.objects.all()
+
     def retrieve(self, request, pk):
-        queryset = News.objects.all()
-        news = get_object_or_404(queryset, pk=pk)
-        serializer = NewsSerializer(news)
+        news = get_object_or_404(self.queryset, pk=pk)
+        serializer = NewsDetailSerializer(news)
         return Response(serializer.data)
 
-    def delete(self, request, pk):
-        queryset = News.objects.all()
-        news = get_object_or_404(queryset, pk=pk)
-        news.delete()
+    def destroy(self, request, pk):
+        get_object_or_404(self.queryset, pk=pk).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def update(self, request):
+        pass
