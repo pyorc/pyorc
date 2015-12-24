@@ -10,7 +10,7 @@ def my_on_failure(self, exc, task_id, args, kwargs, einfo):
 
 app = Celery(broker='amqp://guest@localhost//',
              backend='amqp://',
-             include=['pushes.tasks'])
+             include=['tasks'])
 
 app.conf.update(
     CELERY_TASK_RESULT_EXPIRES=3600,

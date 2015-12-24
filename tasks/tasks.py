@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pyorc.celeryconfig import app
+from celeryconfig import app
 
 
 @app.task(time_limit=10)
