@@ -2,3 +2,4 @@
 .idea/*
 */migrations
 migrations/*
+dump.rdb
