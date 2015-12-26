@@ -3,14 +3,14 @@
 from django.db import models
 from django.utils import timezone
 
-import json
+
 class Question(models.Model):
     question_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=128)
     content = models.TextField()
     user_id = models.CharField(max_length=32)
-    create_dt = models.DateTimeField(default=timezone.now())
-    update_dt = models.DateTimeField(auto_now=None)
+    create_dt = models.DateTimeField(default=timezone.now)
+    update_dt = models.DateTimeField(auto_now=True)
     supplement = models.TextField(null=True)
 
     class Meta:
@@ -19,22 +19,15 @@ class Question(models.Model):
 
 class Answer(models.Model):
     answer_id = models.AutoField(primary_key=True)
-    question_id = models.ForeignKey(Question, related_name='question')  # 外键 问题id
+    question_id = models.IntegerField()  # 外键 问题id
     content = models.TextField()
-    create_dt = models.DateTimeField(default=timezone.now())
+    create_dt = models.DateTimeField(default=timezone.now)
     update_dt = models.DateTimeField(auto_now=True)
     user_id = models.CharField(max_length=32)
-    agree = models.IntegerField()
-    disagree = models.IntegerField()
 
     class Meta:
         db_table = 'answer'
 
-    def __unicode__(self):
-        return json.dumps({
-            'answer_id': self.answer_id,
-            'conent': self.content
-        }, ensure_ascii=False)
 
 class Collection(models.Model):
     question_id = models.IntegerField()
@@ -56,3 +49,16 @@ class Start(models.Model):
     class Meta:
         db_table = 'start'
         unique_together = ('user_id', 'question_id', 'answer_id')
+
+
+class Comment(models.Model):
+    comment_id = models.AutoField(primary_key=True)
+    parent_id = models.IntegerField()
+    content = models.TextField()
+    user_id = models.CharField(max_length=32)
+    category = models.IntegerField()
+    flag = models.IntegerField()
+    create_dt = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'comment'
