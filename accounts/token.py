@@ -1,8 +1,11 @@
 # coding=utf-8
 
 
+import re
 from uuid import uuid4
+
 from django.core.cache import cache
+from rest_framework.response import Response
 
 
 # TOKEN 失效时间(秒数)
@@ -50,3 +53,16 @@ class Token(object):
             return
         cache.delete(TOKEN_EXPIRE_TIME + token)
         cache.delete(USER_ID_KEY_PREFIX + str(user_id))
+
+
+def token_required(func):
+    def wrapper(viewset, request, *args, **kwargs):
+        try:
+            request.token = re.match('^token (\w+)', request.META['HTTP_AUTHORIZATION']).groups()[0]
+        except (KeyError, AttributeError):
+            return Response(status=403)
+        request.user_id = Token.get_user_id_by_token(request.token)
+        if not request.user_id:
+            return Response(status=403)
+        return func(viewset, request, *args, **kwargs)
+    return wrapper
