@@ -42,3 +42,10 @@ class AccountViewSet(ViewSet):
             Token.delete_token(token)
         token = Token.create_token(user.id)
         return Response(data={'token': token}, status=200)
+
+
+def token_required(func):
+    def wrapper(viewset, request, *args, **kwargs):
+        print request
+        return func(viewset, request, *args, **kwargs)
+    return wrapper()
