@@ -4,3 +4,4 @@ pbkdf2
 djangorestframework
 celery
 django-redis
+django-simple-elasticsearch
