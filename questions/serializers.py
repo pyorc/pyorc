@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-
 from models import *
 
 
@@ -14,8 +13,8 @@ class AnswerDetailSerializer(serializers.ModelSerializer):
         fields = ['answer_id', 'content', 'create_dt', 'user', 'starts']
 
     def get_starts(self, obj):
-        agree = Start.objects.filter(answer_id=obj.answer_id, flag=0).count()
-        disagree = Start.objects.filter(answer_id=obj.answer_id, flag=1).count()
+        agree = Star.objects.filter(answer_id=obj.answer_id, flag=0).count()
+        disagree = Star.objects.filter(answer_id=obj.answer_id, flag=1).count()
         return dict(agree=agree, disagree=disagree)
 
     def get_user(self, obj):
@@ -43,8 +42,8 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
         return AnswerDetailSerializer(answers, many=True).data
 
     def get_starts(self, obj):
-        agree = Start.objects.filter(question_id=obj.question_id, flag=0).count()
-        disagree = Start.objects.filter(question_id=obj.question_id, flag=1).count()
+        agree = Star.objects.filter(question_id=obj.question_id, flag=0).count()
+        disagree = Star.objects.filter(question_id=obj.question_id, flag=1).count()
         return dict(agree=agree, disagree=disagree)
 
     def get_user(self, obj):
@@ -73,6 +72,14 @@ class CommentDetailSerializer(serializers.ModelSerializer):
 
 
 class StartCreateSerializer(serializers.ModelSerializer):
+    flag = serializers.ChoiceField(choices=[0, 1])
+
     class Meta:
-        model = Start
-        fields = ['user_id']
+        model = Star
+        fields = ['flag']
+
+
+class CollectionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Collection
+        fields = ['parent_id']
