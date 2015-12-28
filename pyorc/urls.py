@@ -22,5 +22,6 @@ import posts.urls
 urlpatterns = [
     # url(r'^accounts', include(accounts.urls)),
     url(r'', include('news.urls')),
+    url(r'', include('questions.urls')),
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

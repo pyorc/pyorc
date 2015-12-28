@@ -41,7 +41,8 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'news',
     'tasks',
-    # 'posts',
+    'questions',
+    # 'posts'
     'accounts',
 )
 
@@ -94,3 +95,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+ELASTICSEARCH_TYPE_CLASSES = [
+    'questions.models.Start'
+]

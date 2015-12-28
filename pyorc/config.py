@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-"""
 
-@Author：xiaowang 
 
-@Description：
+def enum(*sequential, **named):
+    enums = dict(zip(sequential, range(len(sequential))), **named)
+    reverse = dict((value, key) for key, value in enums.iteritems())
+    enums['reverse_mapping'] = reverse
+    return type('Enum', (), enums)
 
-@Create date: 15-12-28
 
-"""
+START_CATEGORY = enum(questions=0, answers=1)
+
+
