@@ -3,10 +3,11 @@ from django.conf.urls import url
 from posts.views import PostViewSet
 
 
-PostViewSet.as_view(actions={'get': 'retrieve', 'delete': 'destroy'})
-PostViewSet.as_view(actions={'post': 'create', 'get': 'list'})
+post_detail = PostViewSet.as_view(actions={'get': 'retrieve', 'delete': 'destroy'})
+post_list = PostViewSet.as_view(actions={'post': 'create', 'get': 'list'})
 
 
 urlpatterns = [
-    # url(),
+    url('^$', post_list),
+    url('^/(?P<post_id>\w+)', post_detail)
 ]
