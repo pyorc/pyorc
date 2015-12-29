@@ -1,19 +1,47 @@
 # -*- coding: utf-8 -*-
 
 
-from rest_framework import viewsets
-from django.shortcuts import get_object_or_404
-from serializers import *
-from paginations import QuestionSetPagination
-from rest_framework.response import Response
-from rest_framework import status
 import re
 
-from elasticsearch import Elasticsearch
+from django import forms
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.response import Response
+from simple_elasticsearch.forms import ElasticsearchForm, ElasticsearchProcessor
+
+from paginations import QuestionSetPagination
+from serializers import *
+
+
+class QuestionSearchForm(ElasticsearchForm):
+    title = forms.CharField()
+
+    def get_index(self):
+        return 'pyorc'
+
+    def get_type(self):
+        return 'question'
+
+    def prepare_query(self):
+        match = {}
+        for key, value in self.data.items():
+            match[key] = value
+        return {
+            "query": {
+                "match":match
+            }
+        }
 
 
 class QuestionDetailViewSet(viewsets.ViewSet):
+    """
+    """
     queryset = Question.objects.all()
+    esp = ElasticsearchProcessor()
+
+    """
+    """
 
     def retrieve(self, request, pk):
         question = get_object_or_404(self.queryset, pk=pk)
@@ -21,6 +49,7 @@ class QuestionDetailViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, pk):
+        pass
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def update(self, request, pk):
@@ -31,19 +60,24 @@ class QuestionDetailViewSet(viewsets.ViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def search(self, request):
+        form = QuestionSearchForm(request.GET)
+        self.esp.reset()
+        self.esp.add_search(query=form)
+        response = self.esp.es.msearch(self.esp.bulk_search_data)
+        return Response(data=response, status=status.HTTP_200_OK)
+
 
 class QuestionListViewSet(viewsets.ViewSet):
     queryset = Question.objects.all()
     paginator = QuestionSetPagination()
 
     def list(self, request):
-        Elasticsearch.search()
         page = self.paginator.paginate_queryset(self.queryset, request)
         question = QuestionListSerializer(page, many=True).data
         return self.paginator.get_paginated_response(question)
 
     def create(self, request):
-
         serializer = QuestionCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

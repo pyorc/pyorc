@@ -14,9 +14,10 @@ urlpatterns = [
     url(r'questions/(?P<pk>[0-9]+)/answers$', AnswerListViews.as_view({
         'post': 'create'
     })),
-    url(r'questions|answers/(?P<pk>[0-9]+)/starts$',StartListViewsSet.as_view({
+    url(r'questions|answers/(?P<pk>[0-9]+)/starts$', StartListViewsSet.as_view({
         'post': 'create'
     })),
+    url(r'questions/search$', QuestionDetailViewSet.as_view({
+        'get': 'search'
+    })),
 ]
-
-
