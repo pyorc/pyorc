@@ -28,8 +28,10 @@ class Token(object):
     @classmethod
     def get_user_id_by_token(cls, token):
         user_id = cache.get(TOKEN_KEY_PREFIX + token)
+        if not user_id:
+            return
         cls._reset_expire_time_by_token(token)  # 更新 token 失效时间
-        return user_id
+        return int(user_id)
 
     @classmethod
     def get_token_by_user_id(cls, user_id):

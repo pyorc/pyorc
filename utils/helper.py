@@ -1,19 +1,17 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import json
 import uuid
 
-
-def parse_request(func):
-    def wrapper(_, request, *args, **kw):
-        if request.method == 'GET':
-            request.dict_data = dict(request.GET)
-        else:
-            request.dict_data = json.loads(request.body)
-        return func(_, request, *args, **kw)
-    return wrapper
+from rest_framework.settings import api_settings
 
 
 def uuid_key():
     return uuid.uuid4().hex
+
+
+def get_paginated_response(request, queryset, serializer_class):
+    paginator = api_settings.DEFAULT_PAGINATION_CLASS()
+    page = paginator.paginate_queryset(queryset, request)
+    data = serializer_class(page, many=True).data
+    return paginator.get_paginated_response(data)

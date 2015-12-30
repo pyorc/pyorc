@@ -17,12 +17,13 @@ from django.conf.urls import include, url
 
 import accounts.urls
 import posts.urls
+import topics.urls
 
 
 urlpatterns = [
     url(r'^accounts', include(accounts.urls)),
-    url(r'^posts', include(posts.urls)),
+    url(r'^topics/(?P<topic_id>\w+)/posts', include(posts.urls)),
+    url(r'^topics', include(topics.urls)),
     url(r'', include('news.urls')),
     url(r'', include('questions.urls')),
-    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
