@@ -18,6 +18,8 @@ class News(models.Model):
     agree_number = models.IntegerField(default=0)
     disagree_number = models.IntegerField(default=0)
     category = models.IntegerField()
+    brief = models.TextField(null=True)
+
 
     class Meta:
         db_table = 'news'

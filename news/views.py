@@ -13,12 +13,12 @@ from serializers import NewsDetailSerializer, NewsListSerializer
 
 class NewsListViewSet(viewsets.ViewSet):
     paginator = NewsSetPagination()
-    queryset = News.objects.all()
+    queryset = News.objects.all().order_by('-news_id')
 
     def list(self, request, **kwargs):
         page = self.paginator.paginate_queryset(self.queryset, request)
-        drivers = NewsListSerializer(page, many=True).data
-        return self.paginator.get_paginated_response(drivers)
+        news = NewsListSerializer(page, many=True).data
+        return self.paginator.get_paginated_response(news)
 
         # def create(self, request):
         #     # todo

@@ -10,7 +10,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from simple_elasticsearch.forms import ElasticsearchForm, ElasticsearchProcessor
 
-from paginations import QuestionSetPagination
+from paginations import QuestionSetPagination, AnswersSetPagination
 from serializers import *
 
 
@@ -29,7 +29,8 @@ class QuestionSearchForm(ElasticsearchForm):
             match[key] = value
         return {
             "query": {
-                "match":match
+                "match": match,
+                # "minimum_should_match": "75%"
             }
         }
 
@@ -78,24 +79,37 @@ class QuestionListViewSet(viewsets.ViewSet):
         return self.paginator.get_paginated_response(question)
 
     def create(self, request):
+        request.user_id = 'xiaowang'
         serializer = QuestionCreateSerializer(data=request.data)
         if serializer.is_valid():
+            serializer.validated_data['user_id'] = request.user_id
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AnswerListViews(viewsets.ViewSet):
-    queryset = Question.objects.all()
+    question_queryset = Question.objects.all()
+    answer_queryset = Answer.objects.all()
+    paginator = AnswersSetPagination()
 
     def create(self, request, pk):
         serializer = AnswerCreateSerialisr(data=request.data)
 
         if serializer.is_valid():
-            get_object_or_404(self.queryset, pk=pk)
+            get_object_or_404(self.question_queryset, pk=pk)
+            serializer.validated_data['user_id'] = 'xiaowang'
+            serializer.validated_data['question_id'] = pk
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, pk):
+        answers_queryset = self.answer_queryset.filter(question_id=pk)
+        page = self.paginator.paginate_queryset(answers_queryset, request)
+        answers = AnswerDetailSerializer(page, many=True).data
+        return self.paginator.get_paginated_response(answers)
+
 
 
 class StartListViewsSet(viewsets.ViewSet):
@@ -144,3 +158,33 @@ class CollectionListViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CommentListViewSet(viewsets.ViewSet):
+    comment_queryset = Comment.objects.all()
+    answer_queryset = Answer.objects.all()
+
+    def create(self, request, pk):
+        serializer = CommentCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            category = re.findall('/(\w*)/', request._request.path)
+            parent_id = pk
+            if category[0] == 'comments':
+                category = 0
+                comment = get_object_or_404(self.comment_queryset, pk=pk)
+                parent_id = comment.parent_id
+            elif category[0] == 'answers':
+                category = 1
+                get_object_or_404(self.answer_queryset, pk=pk)
+            serializer.validated_data['parent_id'] = parent_id
+            serializer.validated_data['category'] = category
+            serializer.validated_data['flag'] = 1
+            serializer.validated_data['user_id'] = 'xiaowang'
+            comment = serializer.save()
+            return Response(data=CommentDetailSerializer(comment).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+

@@ -5,6 +5,7 @@ from django.utils import timezone
 from simple_elasticsearch.mixins import ElasticsearchIndexMixin
 from django.db.models.signals import post_save, pre_delete
 
+
 class Question(models.Model, ElasticsearchIndexMixin):
     question_id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=128)
@@ -13,6 +14,7 @@ class Question(models.Model, ElasticsearchIndexMixin):
     create_dt = models.DateTimeField(default=timezone.now)
     update_dt = models.DateTimeField(auto_now=True)
     supplement = models.TextField(null=True)
+    tags = models.CharField(max_length=128, null=True)
 
     class Meta:
         db_table = 'question'
@@ -34,7 +36,8 @@ class Question(models.Model, ElasticsearchIndexMixin):
             'user_id': obj.user_id,
             'create_dt': obj.create_dt,
             'update_dt': obj.update_dt,
-            'supplement': obj.supplement
+            'supplement': obj.supplement,
+            'tag': obj.supplement
         }
 
     @classmethod

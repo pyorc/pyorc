@@ -42,8 +42,8 @@ INSTALLED_APPS = (
     'tasks',
     'questions',
     # 'posts'
-    'posts',
-    'accounts',
+    # 'posts',
+    # 'accounts',
 )
 
 MIDDLEWARE_CLASSES = (
