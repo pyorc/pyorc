@@ -44,6 +44,9 @@ INSTALLED_APPS = (
     # 'posts'
     # 'posts',
     # 'accounts',
+    'topics',
+    'posts',
+    'accounts',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,3 +113,8 @@ STATIC_URL = '/static/'
 ELASTICSEARCH_TYPE_CLASSES = [
     'questions.models.Start'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20
+}
